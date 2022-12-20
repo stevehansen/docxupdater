@@ -7,13 +7,13 @@ using Microsoft.Win32;
 
 namespace DocxUpdater
 {
-    static class Program
+    internal static class Program
     {
         [STAThread]
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             const string marker = "-=XML=-";
-            const int check = 20;
+            const int check = 100;
 
             var embed = args.Contains("--embed") || args.Contains("/embed");
             var path = typeof(Program).Assembly.Location;
@@ -23,7 +23,7 @@ namespace DocxUpdater
             if (xmlPath == null)
             {
                 var contents = File.ReadAllText(path, Encoding.UTF8);
-                var index = contents.IndexOf(marker);
+                var index = contents.IndexOf(marker, StringComparison.Ordinal);
                 if (index == -1)
                 {
                     var ofd = new OpenFileDialog { Title = "Select XML file", Filter = "XML files|*.xml" };
@@ -45,7 +45,7 @@ namespace DocxUpdater
             {
                 var target = Path.ChangeExtension(path, "." + Path.GetFileNameWithoutExtension(xmlPath) + ".exe");
                 File.Copy(path, target, true);
-                // NOTE: v1 saves XML as cleartext
+                // NOTE: v1 saves XML as clear text
                 File.AppendAllText(target, marker + '\x01' + xmlContents, Encoding.UTF8);
                 return;
             }
