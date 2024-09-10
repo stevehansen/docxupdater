@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.IO.Packaging;
 using System.Linq;
@@ -76,6 +76,7 @@ namespace DocxUpdater
                         {
                             // NOTE: Found correct part
                             stream.Position = 0;
+                            stream.SetLength(0);
 
                             using (var writer = new StreamWriter(stream))
                             {
@@ -89,6 +90,7 @@ namespace DocxUpdater
                 }
 
                 package.Flush();
+                package.Close();
             }
         }
     }
